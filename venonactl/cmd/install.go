@@ -275,7 +275,7 @@ func init() {
 	installCmd.Flags().BoolVar(&installCmdOptions.kubernetesRunnerType, "kubernetes-runner-type", false, "Set the runner type to kubernetes (alpha feature)")
 
 	installCmd.Flags().StringArrayVar(&installCmdOptions.templateValues, "set-value", []string{}, "Set values for templates, example: --set-value LocalVolumesDir=/mnt/disks/ssd0/codefresh-volumes")
-	installCmd.Flags().StringArrayVar(&installCmdOptions.templateFileValues, "set-file", []string{}, "Set values for templates from file, example: --set-value Storage.GoogleServiceAccount=/path/to/service-account.json")
+	installCmd.Flags().StringArrayVar(&installCmdOptions.templateFileValues, "set-file", []string{}, "Set values for templates from file, example: --set-file Storage.GoogleServiceAccount=/path/to/service-account.json")
 
 }
 

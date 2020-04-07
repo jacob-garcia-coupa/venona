@@ -126,6 +126,9 @@ spec:
           containers:
             - name: dind-volume-cleanup
               image: codefresh/dind-volume-cleanup
+              env:
+              - name: PROVISIONED_BY
+                value: codefresh.io/dind-volume-provisioner-{{ .AppName }}-{{ .Namespace }}
 {{- end }}`
 
 	templatesMap["daemonset.dind-lv-monitor.vp.yaml"] = `{{- if eq .Storage.Backend "local" -}}
