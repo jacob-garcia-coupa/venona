@@ -10,6 +10,8 @@ const ERROR_MESSAGES = {
 	FAILED_TO_DELETE_POD: 'Failed to delete Kubernetes pod',
 	FAILED_TO_CREATE_PVC: 'Failed to create Kubernetes pvc',
 	FAILED_TO_DELETE_PVC: 'Failed to delete Kubernetes pvc',
+	FAILED_TO_RETRIVE_POD_STATUS: 'Failed to get pod status',
+
 };
 
 
@@ -86,6 +88,17 @@ class Kubernetes {
 			return Promise.resolve();
 		} catch (err) {
 			throw new Error(`${ERROR_MESSAGES.FAILED_TO_DELETE_PVC} with message: ${err.message}`);
+		}
+	}
+
+	async getPod(logger, namespace, name) {
+		try {
+			const status = await this.client.api.v1.namespaces(namespace).pod(name).status;
+			logger.info('Status retrived');
+			return status;
+		} catch (err) {
+			throw new Error(`${ERROR_MESSAGES.FAILED_TO_RETRIVE_POD_STATUS} with message: ${err.message}`);
+
 		}
 	}
 }
