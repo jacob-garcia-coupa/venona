@@ -87,6 +87,16 @@ class Kubernetes {
 			throw new Error(`${ERROR_MESSAGES.FAILED_TO_DELETE_PVC} with message: ${err.message}`);
 		}
 	}
+	async getPod(logger, namespace, name) {
+		try {
+			const status = await this.client.api.v1.namespaces(namespace).pod(name).status;
+			logger.info('Status retrived');
+			return status;
+		} catch (err) {
+			throw new Error(`${ERROR_MESSAGES.FAILED_TO_RETRIVE_POD_STATUS} with message: ${err.message}`);
+
+		}
+	}
 }
 
 Kubernetes.Errors = ERROR_MESSAGES;
