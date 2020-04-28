@@ -50,9 +50,9 @@ class Kubernetes {
 
 	async createPod(logger, spec) {
 		try {
-			await this.client.api.v1.namespaces(spec.metadata.namespace).pod.post({ body: spec });
+			const podDef = await this.client.api.v1.namespaces(spec.metadata.namespace).pod.post({ body: spec });
 			logger.info('Pod created');
-			return Promise.resolve();
+			return Promise.resolve(podDef);
 		} catch (err) {
 			throw new Error(`${ERROR_MESSAGES.FAILED_TO_CREATE_POD} with message: ${err.message}`);
 		}

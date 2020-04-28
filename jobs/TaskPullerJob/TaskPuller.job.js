@@ -7,6 +7,7 @@ const CreatePod = require('./tasks/CreatePod.task');
 const DeletePod = require('./tasks/DeletePod.task');
 const CreatePvc = require('./tasks/CreatePvc.task');
 const DeletePvc = require('./tasks/DeletePvc.task');
+const PodStatusDecorator = require('./tasks/PodStatusDecorator.task');
 
 const ERROR_MESSAGES = {
 	FAILED_TO_EXECUTE_TASK: 'Failed to run job TaskPuller, call to Codefresh rejected',
@@ -17,7 +18,7 @@ class TaskPullerJob extends Base {
 		super(...args);
 		
 		this.typeToTaskMap = {
-			'CreatePod': { executor: this._executeTask(CreatePod), priority: CreatePod.priority },
+			'CreatePod': { executor: this._executeTask(PodStatusDecorator), priority: CreatePod.priority },
 			'DeletePod': { executor: this._executeTask(DeletePod), priority: DeletePod.priority },
 			'CreatePvc': { executor: this._executeTask(CreatePvc), priority: CreatePvc.priority },
 			'DeletePvc': { executor: this._executeTask(DeletePvc), priority: DeletePvc.priority },

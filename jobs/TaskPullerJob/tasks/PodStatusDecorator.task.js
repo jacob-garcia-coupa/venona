@@ -1,5 +1,7 @@
+const _ = require('lodash');
 const Base = require('../../BaseJob');
-const CreatePodTask = require('../CreatePod.task');
+const CreatePodTask = require('./CreatePod.task');
+const StatusesToBeTerminated = ['cpu'];
 
 const ERROR_MESSAGES = {
 	FAILED_TO_EXECUTE_TASK: 'Failed to run task PodStatusDecoratorTask',
@@ -20,7 +22,20 @@ class PodStatusDecoratorTask extends Base {
 				setTimeout(resolve, 30000);
 			});
 			// Check pod status
-			this.kubernetesAPI.getPod(this.logger, pod.namespace, pod.name);
+			if (pod) {
+				const name = _.get(pod, 'body.metadata.name');
+				const namespace = _.get(pod, 'body.metadata.namespace');
+				const service = await this.getKubernetesService(_.get(task, 'metadata.reName'));
+				const podSnapshot = await service.getPod(this.logger, namespace, name);
+				if (podSnapshot) {
+					const phase = _.get(podSnapshot,'status.phase');
+					if (_.includes(StatusesToBeTerminated, phase)) {
+						// send termination call to codefresh
+					}
+
+				}
+			}
+			
 			return pod;
 		} catch (err) {
 			const message = `${ERROR_MESSAGES.FAILED_TO_EXECUTE_TASK}: ${err.message}`;
