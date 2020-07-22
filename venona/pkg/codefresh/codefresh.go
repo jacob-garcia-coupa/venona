@@ -83,7 +83,9 @@ func New(opt Options) Codefresh {
 // Tasks get from Codefresh all latest tasks
 func (c cf) Tasks() ([]task.Task, error) {
 	c.logger.Debug("Requesting tasks")
-	res, err := c.doRequest("GET", nil, "api", "agent", c.agentID, "tasks")
+	queryParams := map[string]string{}
+	queryParams["resouceStatus"] = "ready"
+	res, err := c.doRequest("GET", nil, queryParams, "api", "workflow", c.agentID)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +108,7 @@ func (c cf) ReportStatus(status AgentStatus) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.doRequest("PUT", bytes.NewBuffer(s), "api", "agent", c.agentID, "status")
+	_, err = c.doRequest("PUT", bytes.NewBuffer(s), nil, "api", "agent", c.agentID, "status")
 	if err != nil {
 		return err
 	}
@@ -137,7 +139,7 @@ func (c cf) prepareURL(paths ...string) (*url.URL, error) {
 	return u, nil
 }
 
-func (c cf) prepareRequest(method string, data io.Reader, apis ...string) (*http.Request, error) {
+func (c cf) prepareRequest(method string, data io.Reader, queryParams map[string]string, apis ...string) (*http.Request, error) {
 	u, err := c.prepareURL(apis...)
 	if err != nil {
 		return nil, err
@@ -152,11 +154,18 @@ func (c cf) prepareRequest(method string, data io.Reader, apis ...string) (*http
 		req.Header.Add("Authorization", c.token)
 	}
 	req.Header.Add("Content-Type", "application/json")
+	if (queryParams != nil) {
+		q := req.URL.Query()
+		for k,v := range queryParams {
+			q.Add(k, v)
+		}
+		req.URL.RawQuery = q.Encode()
+	}
 	return req, nil
 }
 
-func (c cf) doRequest(method string, body io.Reader, apis ...string) ([]byte, error) {
-	req, err := c.prepareRequest(method, body, apis...)
+func (c cf) doRequest(method string, body io.Reader, queryParams map[string]string,  apis ...string) ([]byte, error) {
+	req, err := c.prepareRequest(method, body, queryParams, apis...)
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
