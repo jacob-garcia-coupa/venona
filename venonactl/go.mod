@@ -17,6 +17,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/spf13/cobra v0.0.6
 	github.com/spf13/viper v1.6.2
+	go.mongodb.org/mongo-driver v1.4.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 	helm.sh/helm/v3 v3.1.1
 	k8s.io/api v0.17.3
