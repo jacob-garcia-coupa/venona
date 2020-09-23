@@ -68,6 +68,13 @@ spec:
           value: {{ .DockerRegistry }}
         {{- end }}
         image: {{ if ne .DockerRegistry ""}} {{- .DockerRegistry }}/{{ .Image.Name }} {{- else }} {{- .Image.Name }}{{- end}}:{{ .Image.Tag | default "latest"}}
+        resources:
+          limits:
+            cpu: "1"
+            memory: 6000Mi
+          requests:
+            cpu: 200m
+            memory: 200Mi
         volumeMounts:
         - name: runnerconf
           mountPath: "/etc/secrets"

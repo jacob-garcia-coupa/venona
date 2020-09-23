@@ -37,6 +37,13 @@ spec:
           imagePullPolicy: Always
           command:
           - /bin/local-volumes-agent
+          resources:
+            limits:
+              cpu: "1"
+              memory: 6000Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
           env:
             - name: NODE_NAME
               valueFrom:

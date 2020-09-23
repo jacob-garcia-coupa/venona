@@ -10,4 +10,12 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get"]
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - coupa-application
+  verbs:
+  - use
 {{- end }}

@@ -45,5 +45,13 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - coupa-application
+  verbs:
+  - use
 {{- end }}
 {{- end }}
