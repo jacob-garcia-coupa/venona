@@ -65,6 +65,14 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get"]
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - coupa-application
+  verbs:
+  - use
 {{- end }}`
 
 	templatesMap["cluster-role.dind-volume-provisioner.vp.yaml"] = `{{- if .CreateRbac }}
@@ -99,6 +107,14 @@ rules:
   - apiGroups: [""]
     resources: ["endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "delete"]
+  - apiGroups:
+    - policy
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - coupa-application
+    verbs:
+    - use
 {{- end }}`
 
 	templatesMap["codefresh-certs-server-secret.re.yaml"] = `apiVersion: v1
@@ -183,6 +199,13 @@ spec:
           imagePullPolicy: Always
           command:
           - /bin/local-volumes-agent
+          resources:
+            limits:
+              cpu: "1"
+              memory: 6000Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
           env:
             - name: NODE_NAME
               valueFrom:
@@ -245,6 +268,13 @@ spec:
       - name: {{ .AppProxy.AppName }}
         image: {{ if ne .DockerRegistry ""}} {{- .DockerRegistry }}/{{ .AppProxy.Image.Name }}:{{ .AppProxy.Image.Tag }} {{- else }} {{- .AppProxy.Image.Name }}:{{ .AppProxy.Image.Tag }} {{- end}}
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "1"
+            memory: 6000Mi
+          requests:
+            cpu: 200m
+            memory: 200Mi
         env:
           - name: PORT
             value: "3000"
@@ -376,6 +406,13 @@ spec:
       - name: {{ .Monitor.AppName }}
         image: {{ if ne .DockerRegistry ""}} {{- .DockerRegistry }}/{{ .Monitor.Image.Name }}:{{ .Monitor.Image.Tag }} {{- else }} {{- .Monitor.Image.Name }}:{{ .Monitor.Image.Tag }} {{- end}}
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "1"
+            memory: 6000Mi
+          requests:
+            cpu: 200m
+            memory: 200Mi
         env:
           - name: SERVICE_NAME
             value: {{ .Monitor.AppName }}
@@ -483,6 +520,13 @@ spec:
           value: {{ .DockerRegistry }}
         {{- end }}
         image: {{ if ne .DockerRegistry ""}} {{- .DockerRegistry }}/{{ .Image.Name }} {{- else }} {{- .Image.Name }}{{- end}}:{{ .Image.Tag | default "latest"}}
+        resources:
+          limits:
+            cpu: "1"
+            memory: 6000Mi
+          requests:
+            cpu: 200m
+            memory: 200Mi
         volumeMounts:
         - name: runnerconf
           mountPath: "/etc/secrets"
@@ -600,6 +644,14 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - coupa-application
+  verbs:
+  - use
 {{- end }}
 {{- end }}`
 
@@ -613,6 +665,14 @@ rules:
 - apiGroups: [""]
   resources: ["pods", "persistentvolumeclaims"]
   verbs: ["get", "create", "delete"]
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - coupa-application
+  verbs:
+  - use
 {{- end }}`
 
 	templatesMap["rolebinding.monitor.yaml"] = `{{- if .CreateRbac }}
